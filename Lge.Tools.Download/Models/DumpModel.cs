@@ -276,7 +276,6 @@ namespace Lge.Tools.Download
 
         public DumpModel()
         {
-            Console.Write("test_normal");
         }
 
         public DumpModel(MainModel aMain)

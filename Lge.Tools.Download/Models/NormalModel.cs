@@ -278,7 +278,7 @@ namespace Lge.Tools.Download
         #endregion ITabModel
 
         public NormalModel()
-        {           
+        {
         }
 
         public NormalModel(MainModel aMain)

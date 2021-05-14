@@ -266,7 +266,7 @@ namespace Lge.Tools.Download
                     Properties.Settings.Default.MCP2K_4K = "4K";
                     MCP2K = false;
                     MCP4K = true;
-                    MessageBox.Show("The image is 4K version", "Warning", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("The image is 2K version", "Warning", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else if (str_DownloadMode == "2048")
                 {

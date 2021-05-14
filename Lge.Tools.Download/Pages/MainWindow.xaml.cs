@@ -57,16 +57,6 @@ namespace Lge.Tools.Download
             Properties.Settings.Default.Save();
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            if(Properties.Settings.Default.MCP2K_4K =="2K")
-                System.Windows.MessageBox.Show("The image is 2K version", "Notification", MessageBoxButton.OK, MessageBoxImage.Information);
-            else if(Properties.Settings.Default.MCP2K_4K == "4K")
-                System.Windows.MessageBox.Show("The image is 4K version", "Notification", MessageBoxButton.OK, MessageBoxImage.Information);
-            else
-                System.Windows.MessageBox.Show("The image is not 2K nor 4K version", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
-        }
-
         protected override void OnSourceInitialized(EventArgs e)
         {
             base.OnSourceInitialized(e);
