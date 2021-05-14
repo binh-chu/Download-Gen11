@@ -1,0 +1,330 @@
+﻿<Window x:Class="Lge.Tools.Download.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:Lge.Tools.Download"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        Title="Gen11 Downloader (V2)"
+        Width="800"
+        Height="650"
+        Closing="Window_Closing"
+        Icon="/Gen11Downloader.v2;component/Resources/win.ico"
+        mc:Ignorable="d">
+    <Window.DataContext>
+        <local:MainModel ModelName="app.Download.Model" />
+    </Window.DataContext>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="3" />
+        </Grid.RowDefinitions>
+        <Grid x:Name="contentGrid" Grid.RowSpan="2">
+            <Image Width="26"
+                   Height="32"
+                   Margin="0,0,0,0"
+                   HorizontalAlignment="Right"
+                   VerticalAlignment="Top"
+                   Panel.ZIndex="1000"
+                   MouseDown="Option_MouseDown"
+                   Source="/Gen11Downloader.v2;component/Resources/option.png"
+                   Stretch="Fill" />
+            <TabControl x:Name="tabControl"
+                        VerticalAlignment="Stretch"
+                        FontSize="14"
+                        IsManipulationEnabled="{Binding IsIdle}"
+                        SelectionChanged="tabControl_SelectionChanged">
+                <TabItem Header="Multi Download">
+                    <Frame DataContext="{Binding MModel}"
+                           LoadCompleted="Frame_LoadCompleted"
+                           Source="MultiPage.xaml" />
+                </TabItem>
+                <TabItem Header="Emergency Download">
+                    <Frame DataContext="{Binding EModel}"
+                           LoadCompleted="Frame_LoadCompleted"
+                           Source="EmergencyPage.xaml" />
+                </TabItem>
+                <TabItem Header="CCM Dump">
+                    <Frame DataContext="{Binding DModel}"
+                           LoadCompleted="Frame_LoadCompleted"
+                           Source="DumpPage.xaml" />
+                </TabItem>
+                <!--  jwoh invisible Micom Download Tab
+                <TabItem Header="Micom Download">
+                    <Frame DataContext="{Binding NModel}"
+                           LoadCompleted="Frame_LoadCompleted"
+                           Source="NormalPage.xaml" />
+                </TabItem>-->
+            </TabControl>
+        </Grid>
+        <Grid x:Name="optionGrid"
+              Grid.Column="1"
+              Background="#FFEEEAA6"
+              DataContext="{Binding NModel}"
+              Visibility="Collapsed">
+            <StackPanel Margin="3,0,3,0">
+                <Grid>
+                    <Border Height="30"
+                            VerticalAlignment="Top"
+                            Background="#FFCDC03E">
+                        <TextBlock HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontWeight="Bold"
+                                   Foreground="#FF2538EE"
+                                   Text="Options" />
+                    </Border>
+                    <Image Width="32"
+                           Height="32"
+                           Margin="0,30,10,-10"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Top"
+                           MouseDown="Info_MouseDown"
+                           Source="/Gen11Downloader.v2;component/Resources/info.png"
+                           Stretch="Fill" />
+                </Grid>
+                <GroupBox Margin="0,10,0,0"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Top"
+                          Visibility="Visible"
+                          Header="Download Mode">
+                    <StackPanel>
+                        <RadioButton Content="2K"
+                                     Name="Radio_bt_2K"
+                                     x:FieldModifier="public"
+                                     GroupName="MCP2K/4K"
+                                     HorizontalAlignment="Left"
+                                     VerticalAlignment="Top"
+                                     IsEnabled="False"
+                                     Tag="1"
+                                     IsChecked="{Binding MCP2K}"/>
+                        <RadioButton Content="4K"
+                                     Name="Radio_bt_4K"
+                                     x:FieldModifier="public"
+                                     GroupName="MCP2K/4K"
+                                     HorizontalAlignment="Left"
+                                     VerticalAlignment="Top"
+                                     Tag="2"
+                                     IsEnabled="False"
+                                     IsChecked="{Binding MCP4K}"/>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Margin="0,10,0,0"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Top"
+                          Header="Download Options"
+                          Visibility="Visible">
+                    <StackPanel>
+                        <GroupBox Margin="5,10,5,0"
+                                  HorizontalAlignment="Stretch"
+                                  VerticalAlignment="Top"
+                                  Header="Modes"
+                                  Padding="3,3,3,5"
+                                  Visibility="{Binding MonlyVisible}">
+                            <StackPanel>
+                                <ToggleButton Height="23"
+                                              Margin="0,5,0,0"
+                                              Content="Backup &amp;Restore"
+                                              IsChecked="{Binding UseEfsBackup}"
+                                              IsEnabled="{Binding IsIdle}"
+                                              Visibility="{Binding MonlyVisible}" />
+                                <ToggleButton Height="23"
+                                              Margin="0,5,0,0"
+                                              Content="Images Update Only"
+                                              IsChecked="{Binding UseUpdateOnly}"
+                                              IsEnabled="{Binding IsIdle}"
+                                              Visibility="{Binding MonlyVisible}" />
+                            </StackPanel>
+                        </GroupBox>
+                        <ToggleButton Width="150"
+                                      Height="23"
+                                      Margin="8,10,0,0"
+                                      HorizontalAlignment="Left"
+                                      VerticalAlignment="Top"
+                                      Content="Use Micom Update"
+                                      IsChecked="{Binding UseMicomUpdate}"
+                                      IsEnabled="{Binding IsIdle}"
+                                      Visibility="{Binding MonlyVisible}" />
+                        <TextBlock Margin="5,5,0,0"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Top"
+                                   Background="#FFEEEAA6"
+                                   Text="Select Platform ID"
+                                   Visibility="{Binding MonlyVisible}" />
+                        <ComboBox x:Name="SelModels"
+                                  Width="150"
+                                  Height="23"
+                                  Margin="8,5,0,0"
+                                  HorizontalAlignment="Left"
+                                  VerticalAlignment="Top"
+                                  HorizontalContentAlignment="Center"
+                                  Foreground="#FF2D550B"
+                                  IsEnabled="{Binding IsIdle}"
+                                  ItemsSource="{Binding Main.Selmodels}"
+                                  SelectedIndex="{Binding SelModel}"
+                                  FontWeight="Bold"
+                                  Visibility="{Binding MonlyVisible}" />
+                        <TextBlock Margin="5,5,0,0"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Top"
+                                   Background="#FFEEEAA6"
+                                   Text="Select Firehose File" />
+                        <ComboBox x:Name="SelFirehoses"
+                                  Width="150"
+                                  Height="23"
+                                  Margin="8,5,0,0"
+                                  HorizontalAlignment="Left"
+                                  VerticalAlignment="Top"
+                                  HorizontalContentAlignment="Center"
+                                  Foreground="#FF2D550B"
+                                  IsEnabled="{Binding IsIdle}"
+                                  ItemsSource="{Binding Main.Selfirehoses}"
+                                  SelectedIndex="{Binding SelFirehose}" />
+                        <TextBlock Margin="5,5,0,0"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Top"
+                                   Background="#FFEEEAA6"
+                                   Text="Select Baudrate"
+                                   Visibility="{Binding MonlyCollapsed}" />
+                        <ComboBox x:Name="SelBaudrates"
+                                  Width="150"
+                                  Height="23"
+                                  Margin="8,5,0,0"
+                                  HorizontalAlignment="Left"
+                                  VerticalAlignment="Top"
+                                  HorizontalContentAlignment="Center"
+                                  Foreground="#FF2D550B"
+                                  IsEnabled="{Binding IsIdle}"
+                                  ItemsSource="{Binding Main.Selbaudrates}"
+                                  SelectedIndex="{Binding SelBaudrate}"
+                                  Visibility="{Binding MonlyCollapsed}" />
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Margin="0,10,0,0"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Top"
+                          Foreground="#FF2D550B"
+                          Header="Developer Only"
+                          MouseDown="DevOptionBox_MouseDown"
+                          Padding="10,3,3,3">
+                    <GroupBox.Background>
+                        <ImageBrush ImageSource="/Gen11Downloader.v2;component/Resources/engine.jpg" Stretch="UniformToFill" />
+                    </GroupBox.Background>
+                    <StackPanel x:Name="_devOptions" Visibility="Hidden">
+                        <TextBlock Margin="5,3,0,2"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Top"
+                                   Background="#CCFBFBFB"
+                                   Text="Download Mode"
+                                   Visibility="{Binding MonlyVisible}" />
+                        <ComboBox x:Name="SelectBoards"
+                                  Width="150"
+                                  Height="23"
+                                  HorizontalAlignment="Left"
+                                  VerticalAlignment="Top"
+                                  HorizontalContentAlignment="Center"
+                                  Foreground="#FF2D550B"
+                                  IsEnabled="{Binding IsIdle}"
+                                  ItemsSource="{Binding Main.Selboards}"
+                                  SelectedIndex="{Binding SelBoard}"
+                                  Visibility="{Binding MonlyVisible}" />
+                        <TextBlock Margin="5,3,0,2"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Top"
+                                   Background="#CCFBFBFB"
+                                   Text="Log output Levels" />
+                        <ComboBox x:Name="loglevels"
+                                  Width="150"
+                                  Height="23"
+                                  HorizontalAlignment="Left"
+                                  VerticalAlignment="Top"
+                                  HorizontalContentAlignment="Center"
+                                  Foreground="#FF2D550B"
+                                  IsEnabled="{Binding IsIdle}"
+                                  ItemsSource="{Binding Main.Loglevels}"
+                                  SelectedIndex="{Binding LogLevel}"
+                                  Visibility="Visible" />
+                        <TextBlock Margin="5,3,0,2"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Top"
+                                   Background="#CCFBFBFB"
+                                   Text="Download Tool Log" />
+                        <Button Width="150"
+                                Height="23"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Click="Button_Click"
+                                Content="Open Log File"
+                                Foreground="#FF2D550B" />
+                        <Button Width="150"
+                                Height="23"
+                                Margin="0,5,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Click="InvokeEfsBackup"
+                                Content="Backup Cal &amp;IMEI"
+                                Foreground="#FF2D550B"
+                                IsEnabled="{Binding CanEfsBackup}"
+                                Visibility="{Binding MonlyVisible}" />
+                        <ToggleButton Width="150"
+                                      Height="23"
+                                      Margin="0,5,0,0"
+                                      HorizontalAlignment="Left"
+                                      VerticalAlignment="Top"
+                                      Background="#CCFBFBFB"
+                                      Content="All Erase"
+                                      Foreground="#FF2D550B"
+                                      IsChecked="{Binding AllErase}"
+                                      IsEnabled="{Binding IsIdle}"
+                                      Visibility="{Binding NonlyCollapsed}" />
+                        <ToggleButton Width="150"
+                                      Height="23"
+                                      Margin="0,5,0,0"
+                                      HorizontalAlignment="Left"
+                                      VerticalAlignment="Top"
+                                      Background="#CCFBFBFB"
+                                      Content="ECC Disable"
+                                      Foreground="#FF2D550B"
+                                      IsChecked="{Binding ECCCheck}"
+                                      IsEnabled="{Binding IsIdle}"
+                                      Visibility="{Binding DonlyVisible}" />
+                        <ToggleButton Width="150"
+                                      Height="23"
+                                      Margin="0,5,0,0"
+                                      HorizontalAlignment="Left"
+                                      VerticalAlignment="Top"
+                                      Background="#CCFBFBFB"
+                                      Content="CCM PCB Only"
+                                      Foreground="#FF2D550B"
+                                      IsChecked="{Binding CCMOnly}"
+                                      IsEnabled="{Binding IsIdle}"
+                                      Visibility="{Binding MonlyVisible}" />
+                        <!--  jwoh invisible FOTA erase check button
+                        <ToggleButton Width="150"
+                                      Margin="0,5,0,0"
+                                      HorizontalAlignment="Left"
+                                      VerticalAlignment="Top"
+                                      Background="#CCFBFBFB"
+                                      Content="Use Dump"
+                                      Foreground="#FF2D550B"
+                                      IsChecked="{Binding DumpEnable}"
+                                      IsEnabled="{Binding IsIdle}"
+                                      Padding="10,0,0,0"
+                                      Visibility="{Binding MVisible}" />-->
+                        <Button Width="33"
+                                Height="20"
+                                HorizontalAlignment="Right"
+                                Background="#99D4DBEE"
+                                BorderBrush="{x:Null}"
+                                Click="Hide_devOptions"
+                                Content="Hide"
+                                Foreground="#FF804187" />
+                    </StackPanel>
+                </GroupBox>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

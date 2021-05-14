@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="euc-kr"?>
+<!-- encoding must be euc-kr or CP51949 for hangul (save as no bom euc-kr or CP51949 text file) -->
+<configuration>
+  <header>
+    <name>downloader</name>
+    <version>1.0.1</version>
+    <date>2016-06-08</date>
+    <description>downloader configuration for GEN 11</description>
+  </header>
+  <downloader>
+    <!-- logelvel 0:none, 1:error, 2:info, 3:verbose -->
+    <loglevel>2</loglevel>
+    <protocols>
+      <protocol>sahara</protocol>
+      <protocol>firehose</protocol>
+    </protocols>
+    <!-- sahara protocol definition-->
+    <sahara>
+      <version>
+        <min>2</min>
+        <max>2</max>
+      </version>
+      <description>protocol will be used to download device programer</description>
+      <images>
+        <image>
+          <name>PROGRAMER</name>
+          <!-- don't change below id number. programer is #13 always. -->
+          <id>13</id>
+          <path>F:\prj\QPST_DL\ref\_G11_QPST_Downlaoder_자료들\다운로드_관련_유틸리티_툴들\prog_nand_firehose_9x45.mbn</path>
+          <description>fire hose protocol program</description>
+        </image>
+      </images>
+    </sahara>
+    <!-- fire hose protocol definition-->
+    <!-- boolean value is 0:False, 1:True -->
+    <firehose>
+      <description>protocol will be used to download all partition images</description>
+      <configure>
+        <memoryName>emmc</memoryName>
+        <skipStorageInit>0</skipStorageInit>
+        <targetName>9x45</targetName>
+        <maxPayloadSizeToTargetInBytes>8192</maxPayloadSizeToTargetInBytes>
+        <verbose>0</verbose>
+        <allErase>1</allErase>
+        <!-- 0: no reset, 1 ~ : reset after #N seconds  -->
+        <reset>3</reset>
+        <dir></dir>
+      </configure>
+      <images>
+        <!--  firehose's image id must be unique ! -->
+        <!--  don't change name 'PARTITION' ! (essential image) -->
+        <image name="SBL1" id="1" filename="sbl1.mbn" use="1" erase="0" dump="1">
+          <program PAGES_PER_BLOCK="64" SECTOR_SIZE_IN_BYTES="2048" filename="sbl1.mbn" num_partition_sectors="576" physical_partition_number="0" start_sector="0"/>
+          <description>Second boot loader image</description>
+        </image>
+        <image name="PARTITION" id="2" filename="partition_complete_p2K_b128K.mbn" use="1" erase="0" dump="1">
+          <program PAGES_PER_BLOCK="64" SECTOR_SIZE_IN_BYTES="2048" filename="partition_complete_p2K_b128K.mbn" num_partition_sectors="640" physical_partition_number="0" start_sector="640"/>
+          <description>partition definition table (MIBIB)</description>
+        </image>
+        <image name="EFS" id="3" filename="" use="0" erase="0" dump="1">
+          <program PAGES_PER_BLOCK="64" SECTOR_SIZE_IN_BYTES="2048" filename="" num_partition_sectors="5184" physical_partition_number="0" start_sector="1280"/>
+          <description>EFS area</description>
+        </image>
+        <image name="EFS_2" id="4" filename="" use="0" erase="0" dump="1">
+          <program PAGES_PER_BLOCK="64" SECTOR_SIZE_IN_BYTES="2048" filename="" num_partition_sectors="5184" physical_partition_number="0" start_sector="6464"/>
+          <description>EFS_2 area</description>
+        </image>
+        <image name="TZ" id="5" filename="tz.mbn" use="1" erase="0" dump="1">
+          <program PAGES_PER_BLOCK="64" SECTOR_SIZE_IN_BYTES="2048" filename="tz.mbn" num_partition_sectors="576" physical_partition_number="0" start_sector="11648"/>
+          <description>TZ area</description>
+        </image>
+        <image name="TZ_2" id="6" filename="tz.mbn" use="1" erase="0" dump="1">
+          <program PAGES_PER_BLOCK="64" SECTOR_SIZE_IN_BYTES="2048" filename="" num_partition_sectors="576" physical_partition_number="0" start_sector="12224"/>
+          <description>TZ2 area</description>
+        </image>
+        <image name="RPM" id="7" filename="rpm.mbn" use="1" erase="0" dump="1">
+          <program PAGES_PER_BLOCK="64" SECTOR_SIZE_IN_BYTES="2048" filename="rpm.mbn" num_partition_sectors="448" physical_partition_number="0" start_sector="12800"/>
+          <description>RPM area</description>
+        </image>
+        <image name="RPM_2" id="8" filename="rpm.mbn" use="1" erase="0" dump="1">
+          <program PAGES_PER_BLOCK="64" SECTOR_SIZE_IN_BYTES="2048" filename="" num_partition_sectors="448" physical_partition_number="0" start_sector="13248"/>
+          <description>RPM2 area</description>        </image>
+        <image name="ABOOT" id="9" filename="appsboot.mbn" use="1" erase="0" dump="1">
+          <program PAGES_PER_BLOCK="64" SECTOR_SIZE_IN_BYTES="2048" filename="appsboot.mbn" num_partition_sectors="512" physical_partition_number="0" start_sector="13696"/>
+          <description>APPBoot area</description>
+        </image>
+        <image name="ABOOT_2" id="10" filename="appsboot.mbn" use="1" erase="0" dump="1">
+          <program PAGES_PER_BLOCK="64" SECTOR_SIZE_IN_BYTES="2048" filename="" num_partition_sectors="512" physical_partition_number="0" start_sector="14208"/>
+          <description>aboot2 area</description>
+        </image>
+        <image name="MDMBOOT" id="11" filename="mdm9640-boot.img" use="1" erase="0" dump="1">
+          <program PAGES_PER_BLOCK="64" SECTOR_SIZE_IN_BYTES="2048" filename="mdm9640-boot.img" num_partition_sectors="5760" physical_partition_number="0" start_sector="14720"/>
+          <description>mdm9640-boot area</description>
+        </image>
+        <image name="MDMBOOT_2" id="12" filename="mdm9640-boot.img" use="1" erase="0" dump="1">
+          <program PAGES_PER_BLOCK="64" SECTOR_SIZE_IN_BYTES="2048" filename="" num_partition_sectors="5760" physical_partition_number="0" start_sector="20480"/>
+          <description>mdm9640-boot2 area</description>
+        </image>
+        <image name="MODEM" id="13" filename="NON-HLOS.ubi" use="1" erase="0" dump="1">
+          <program PAGES_PER_BLOCK="64" SECTOR_SIZE_IN_BYTES="2048" filename="NON-HLOS.ubi" num_partition_sectors="29504" physical_partition_number="0" start_sector="26240"/>
+          <description>modem area</description>
+        </image>
+        <image name="MODEM_2" id="14" filename="NON-HLOS.ubi" use="1" erase="0" dump="1">
+          <program PAGES_PER_BLOCK="64" SECTOR_SIZE_IN_BYTES="2048" filename="" num_partition_sectors="29504" physical_partition_number="0" start_sector="55744"/>
+          <description>modem2 area</description>
+        </image>
+        <image name="SYSTEM" id="15" filename="mdm9640-sysfs.ubi" use="1" erase="0" dump="1">
+          <program PAGES_PER_BLOCK="64" SECTOR_SIZE_IN_BYTES="2048" filename="mdm9640-sysfs.ubi" num_partition_sectors="51264" physical_partition_number="0" start_sector="85248"/>
+          <description>system area</description>
+        </image>
+        <image name="SYSTEM_2" id="16" filename="mdm9640-sysfs.ubi" use="1" erase="0" dump="1">
+          <program PAGES_PER_BLOCK="64" SECTOR_SIZE_IN_BYTES="2048" filename="" num_partition_sectors="37952" physical_partition_number="0" start_sector="136512"/>
+          <description>system2 area</description>
+        </image>
+        <image name="PROMPT_PLAY" id="17" filename="" use="0" erase="0" dump="1">
+          <program PAGES_PER_BLOCK="64" SECTOR_SIZE_IN_BYTES="2048" filename="" num_partition_sectors="10304" physical_partition_number="0" start_sector="174464"/>
+          <description>prompt_play area</description>
+        </image>
+        <image name="USERDATA_RW" id="18" filename="" use="0" erase="0" dump="1">
+          <program PAGES_PER_BLOCK="64" SECTOR_SIZE_IN_BYTES="2048" filename="" num_partition_sectors="2112" physical_partition_number="0" start_sector="184768"/>
+          <description>userdata_rw area</description>
+        </image>
+        <image name="USERDATA_RW_2" id="19" filename="" use="0" erase="0" dump="1">
+          <program PAGES_PER_BLOCK="64" SECTOR_SIZE_IN_BYTES="2048" filename="" num_partition_sectors="2112" physical_partition_number="0" start_sector="186880"/>
+          <description>userdata_rw2 area</description>
+        </image>
+        <image name="USERDATA_SEC" id="20" filename="" use="0" erase="0" dump="1">
+          <program PAGES_PER_BLOCK="64" SECTOR_SIZE_IN_BYTES="2048" filename="" num_partition_sectors="1600" physical_partition_number="0" start_sector="188992"/>
+          <description>userdata_sec area</description>
+        </image>
+        <image name="USERDATA_SEC_2" id="21" filename="" use="0" erase="0" dump="1">
+          <program PAGES_PER_BLOCK="64" SECTOR_SIZE_IN_BYTES="2048" filename="" num_partition_sectors="1600" physical_partition_number="0" start_sector="190592"/>
+          <description>userdata_sec2 area</description>
+        </image>
+        <image name="MICOM" id="22" filename="" use="0" erase="0" dump="1">
+          <program PAGES_PER_BLOCK="64" SECTOR_SIZE_IN_BYTES="2048" filename="" num_partition_sectors="2624" physical_partition_number="0" start_sector="192192"/>
+          <description>micom area</description>
+        </image>
+        <image name="FOTA_SELFTEST" id="23" filename="" use="0" erase="0" dump="1">
+          <program PAGES_PER_BLOCK="64" SECTOR_SIZE_IN_BYTES="2048" filename="" num_partition_sectors="576" physical_partition_number="0" start_sector="194816"/>
+          <description>fota_selftest area</description>
+        </image>
+        <image name="DELTA" id="24" filename="" use="0" erase="0" dump="1">
+          <program PAGES_PER_BLOCK="64" SECTOR_SIZE_IN_BYTES="2048" filename="" num_partition_sectors="29760" physical_partition_number="0" start_sector="195392"/>
+          <description>delta area</description>
+        </image>
+      </images>
+    </firehose>
+  </downloader>
+</configuration>

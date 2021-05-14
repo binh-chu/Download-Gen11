@@ -1,0 +1,379 @@
+﻿<Page x:Class="Lge.Tools.Download.NormalPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:Lge.Tools.Download"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      Title="NormalPage"
+      d:DesignHeight="600"
+      d:DesignWidth="600"
+      mc:Ignorable="d">
+    <Page.DataContext>
+        <local:NormalModel />
+    </Page.DataContext>
+    <Grid>
+        <StackPanel>
+            <Popup x:Name="_popItems"
+                   AllowsTransparency="True"
+                   Closed="_popItems_Closed"
+                   Focusable="True"
+                   HorizontalOffset="{Binding ElementName=_btnEdit,
+                                              Path=ActualWidth}"
+                   IsOpen="False"
+                   Placement="Left"
+                   PlacementTarget="{Binding ElementName=_btnEdit}"
+                   PopupAnimation="Slide"
+                   StaysOpen="False"
+                   VerticalOffset="0">
+                <StackPanel>
+                    <ListView x:Name="_itemListView"
+                              BorderThickness="1,1,2,2"
+                              Foreground="#FF254BBB"
+                              ItemsSource="{Binding UsedItems}">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                <Setter Property="IsSelected" Value="{Binding Path=Use, Mode=TwoWay}" />
+                                <Setter Property="IsEnabled" Value="{Binding Enabled}" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn>
+                                    <GridViewColumnHeader HorizontalContentAlignment="Left">
+                                        <CheckBox Checked="AllItems_Checked"
+                                                  ClickMode="Press"
+                                                  Content="   ALL "
+                                                  Unchecked="AllItems_Checked" />
+                                    </GridViewColumnHeader>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ToggleButton ClickMode="Press"
+                                                          Content="{Binding Name}"
+                                                          Cursor="Hand"
+                                                          IsChecked="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem},
+                                                                              Path=IsSelected}"
+                                                          IsEnabled="{Binding Enabled}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </StackPanel>
+            </Popup>
+            <Grid>
+                <Image x:Name="_imageStatus"
+                       Width="48"
+                       Height="48"
+                       Margin="15,12,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       Source="{Binding DeviceImage}" />
+                <Grid Margin="70,30,104,0" VerticalAlignment="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <WrapPanel Height="25.96"
+                           Margin="0,0,0,0"
+                           VerticalAlignment="Top">
+                        <Label x:Name="_textPort"
+                           Grid.Column="0"
+                           Height="25.96"
+                           Content="{Binding CurrentPort.Caption}" />
+                        <Button x:Name="_portDrop"
+                                Background="{x:Null}"
+                                BorderBrush="{x:Null}"
+                                Click="_portDrop_Click"
+                                ClickMode="Press"
+                                Visibility="{Binding SerialPortListVisible}">
+                            <Image Source="/Gen11Downloader.v2;component/Resources/ddown.png" />
+                        </Button>
+                        <Popup x:Name="_popPorts"
+                               AllowsTransparency="True"
+                               Focusable="True"
+                               IsOpen="False"
+                               Placement="Bottom"
+                               PlacementTarget="{Binding ElementName=_portDrop}"
+                               PopupAnimation="Slide"
+                               StaysOpen="False">
+                            <StackPanel>
+                                <ListView x:Name="_portListViewMdm"
+                                          BorderThickness="1,1,2,2"
+                                          Foreground="#FF254BBB"
+                                          ItemsSource="{Binding SerialNormalPorts}"
+                                          SelectionMode="Single">
+                                    <ListView.ItemContainerStyle>
+                                        <Style TargetType="ListViewItem">
+                                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                            <Setter Property="IsSelected" Value="{Binding Path=Checked, Mode=TwoWay}" />
+                                        </Style>
+                                    </ListView.ItemContainerStyle>
+                                    <ListView.View>
+                                        <GridView>
+                                            <GridViewColumn>
+                                                <GridViewColumnHeader Visibility="Collapsed" />
+                                                <GridViewColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Cursor="Hand" Text="{Binding Port.Caption}" />
+                                                    </DataTemplate>
+                                                </GridViewColumn.CellTemplate>
+                                            </GridViewColumn>
+                                        </GridView>
+                                    </ListView.View>
+                                </ListView>
+                            </StackPanel>
+                        </Popup>
+                        <Label x:Name="_textPortMicom"
+                           Grid.Column="0"
+                           Height="25.96"
+                           Content="{Binding MicomPort.Caption}" />
+                        <Button x:Name="_portDropMicom"
+                                Background="{x:Null}"
+                                BorderBrush="{x:Null}"
+                                Click="_portDrop_ClickMicom"
+                                ClickMode="Press"
+                                Visibility="{Binding SerialPortListVisible}">
+                            <Image Source="/Gen11Downloader.v2;component/Resources/ddown.png" />
+                        </Button>
+                        <Popup x:Name="_popPortsMicom"
+                               AllowsTransparency="True"
+                               Focusable="True"
+                               IsOpen="False"
+                               Placement="Bottom"
+                               PlacementTarget="{Binding ElementName=_portDropMicom}"
+                               PopupAnimation="Slide"
+                               StaysOpen="False">
+                            <StackPanel>
+                                <ListView x:Name="_portListViewMicom"
+                                          BorderThickness="1,1,2,2"
+                                          Foreground="#FF254BBB"
+                                          ItemsSource="{Binding SerialNormalPorts}"
+                                          SelectionMode="Single">
+                                    <ListView.ItemContainerStyle>
+                                        <Style TargetType="ListViewItem">
+                                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                            <Setter Property="IsSelected" Value="{Binding Path=CheckedMicom, Mode=TwoWay}" />
+                                        </Style>
+                                    </ListView.ItemContainerStyle>
+                                    <ListView.View>
+                                        <GridView>
+                                            <GridViewColumn>
+                                                <GridViewColumnHeader Visibility="Collapsed" />
+                                                <GridViewColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Cursor="Hand" Text="{Binding Port.Caption}" />
+                                                    </DataTemplate>
+                                                </GridViewColumn.CellTemplate>
+                                            </GridViewColumn>
+                                        </GridView>
+                                    </ListView.View>
+                                </ListView>
+                            </StackPanel>
+                        </Popup>
+                    </WrapPanel>
+                    <Button x:Name="btnInfo"
+                            Grid.Column="1"
+                            Width="66"
+                            Height="22"
+                            Margin="5,7,0,0"
+                            Click="button_VersionInfo_Click"
+                            Content="Version"
+                            Visibility="{Binding DiagVisible}" />
+                </Grid>
+                <Button x:Name="_btnStart"
+                        Width="76"
+                        Height="50"
+                        Margin="0,6,10,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Command="{Binding DownloadCommand,
+                                          Mode=OneWay}"
+                        CommandParameter="{Binding Name,
+                                                   RelativeSource={RelativeSource Self}}"
+                        Foreground="#FFBED106">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Content" Value="Start&#10;Update only" />
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                        <GradientStop Offset="0" Color="#FFAEC5EE" />
+                                        <GradientStop Offset="0.901" Color="#FF3D6BBD" />
+                                        <GradientStop Offset="0.16" Color="#FF4873BF" />
+                                        <GradientStop Offset="1" Color="#FF97B8F1" />
+                                        <GradientStop Offset="0.57" Color="#FF1B63E2" />
+                                    </LinearGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding UseEfsBackup}" Value="True">
+                                    <Setter Property="Button.Content" Value="Start&#10;Backup &amp; Restore" />
+                                    <Setter Property="Background">
+                                        <Setter.Value>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                <GradientStop Offset="0" Color="#FFF3ACD6" />
+                                                <GradientStop Offset="0.915" Color="#FFE45B93" />
+                                                <GradientStop Offset="0.16" Color="#FFBF48B4" />
+                                                <GradientStop Offset="1" Color="#FFF18AC3" />
+                                                <GradientStop Offset="0.57" Color="#FFD43838" />
+                                            </LinearGradientBrush>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <Popup x:Name="_popVersion"
+                       AllowsTransparency="True"
+                       Focusable="True"
+                       HorizontalOffset="{Binding ElementName=btnInfo,
+                                                  Path=Width}"
+                       IsOpen="False"
+                       Placement="Left"
+                       PlacementTarget="{Binding ElementName=btnInfo}"
+                       PopupAnimation="Slide"
+                       StaysOpen="False"
+                       VerticalOffset="0">
+                    <ListView x:Name="vinfoList" ItemsSource="{Binding VersionInfo}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Width="140" DisplayMemberBinding="{Binding Item}">
+                                    <GridViewColumn.Header>
+                                        <GridViewColumnHeader Content="Name" />
+                                    </GridViewColumn.Header>
+                                </GridViewColumn>
+                                <GridViewColumn Width="180" DisplayMemberBinding="{Binding Infomation}">
+                                    <GridViewColumn.Header>
+                                        <GridViewColumnHeader Content="Information" />
+                                    </GridViewColumn.Header>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Popup>
+            </Grid>
+            <Grid Margin="15, 5, 10, 0" VerticalAlignment="Top">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Button x:Name="btnSelect"
+                        Grid.Column="0"
+                        Height="22"
+                        Click="button_Click"
+                        Content="{Binding ConfigPath}"
+                        IsEnabled="{Binding Main.IsIdle}" />
+
+                <Button x:Name="btnDump"
+                        Grid.Column="1"
+                        Width="68"
+                        Height="22"
+                        Margin="5,0,0,0"
+                        Command="{Binding DumpCommand,
+                                          Mode=OneWay}"
+                        CommandParameter="{Binding Name,
+                                                   RelativeSource={RelativeSource Self}}"
+                        Content="Dump"
+                        Visibility="{Binding ShowDump}" />
+                <!--  jwoh invisible FOTA erase check button
+                <Button x:Name="_btnEdit"
+                        Grid.Column="2"
+                        Width="68"
+                        Height="22"
+                        Margin="5,0,0,0"
+                        Click="_btnEdit_Click"
+                        Content="Edit"
+                        IsEnabled="{Binding Editable}" />-->
+            </Grid>
+            <Separator Background="{x:Null}"
+                       BorderBrush="#FF2D737E"
+                       BorderThickness="3" />
+            <Grid Height="91"
+                  Margin="10,5,10,0"
+                  VerticalAlignment="Top">
+                <Grid Panel.ZIndex="30">
+                    <Ellipse x:Name="eprog"
+                             Width="90"
+                             Height="90"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Top"
+                             Opacity="0.95"
+                             RenderTransformOrigin="0.5,0.5"
+                             StrokeThickness="4">
+                        <Ellipse.Stroke>
+                            <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                                <GradientStop Offset="0" Color="#99232238" />
+                                <GradientStop Offset="0.519" Color="#BF11246A" />
+                                <GradientStop Offset="0.62" Color="#D81C4963" />
+                                <GradientStop Offset="0.657" Color="#A519293A" />
+                                <GradientStop Offset="0.987" Color="#C1373A46" />
+                            </LinearGradientBrush>
+                        </Ellipse.Stroke>
+                        <Ellipse.RenderTransform>
+                            <RotateTransform Angle="-90" />
+                        </Ellipse.RenderTransform>
+                        <Ellipse.Fill>
+                            <VisualBrush Stretch="None">
+                                <VisualBrush.Visual>
+                                    <ProgressBar Width="96"
+                                                 Height="96"
+                                                 Value="{Binding FileProgress}" />
+                                </VisualBrush.Visual>
+                            </VisualBrush>
+                        </Ellipse.Fill>
+                    </Ellipse>
+                    <Label Margin="90,5,0,0"
+                           VerticalAlignment="Top"
+                           Content="{Binding TotalStatus}" />
+                </Grid>
+                <Grid Height="50"
+                      Margin="72,0,0,10"
+                      VerticalAlignment="Bottom">
+                    <ProgressBar x:Name="progTotal" Value="{Binding TotalProgress}" />
+                    <TextBlock HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Text="{Binding ElementName=progTotal,
+                                              Path=Value,
+                                              StringFormat={}{0:0} %}" />
+                </Grid>
+            </Grid>
+        </StackPanel>
+        <Grid Margin="0,195,0,0">
+            <Border VerticalAlignment="Top"
+                    BorderBrush="#FFDCB4B4"
+                    BorderThickness="1,1,1,2"
+                    CornerRadius="2">
+                <TextBlock x:Name="tbox"
+                           Foreground="#FF211C1C"
+                           Padding="20,0,0,0"
+                           Text="{Binding StatusMessage}" />
+            </Border>
+            <local:ScrollingTextBox x:Name="_textError"
+                                    Margin="0,20,0,0"
+                                    HorizontalContentAlignment="Stretch"
+                                    VerticalContentAlignment="Stretch"
+                                    BorderThickness="1,1,1,2"
+                                    Foreground="#FFBF4A4A"
+                                    HorizontalScrollBarVisibility="Auto"
+                                    IsReadOnly="True"
+                                    Padding="10,0,0,0"
+                                    ScrollViewer.CanContentScroll="True"
+                                    Text="{Binding ErrorMessages,
+                                                   Mode=OneWay}"
+                                    TextWrapping="Wrap"
+                                    VerticalScrollBarVisibility="Auto">
+                <local:ScrollingTextBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Click="MenuItemClear_Click"
+                                  Header="Clear"
+                                  Tag="clear" />
+                    </ContextMenu>
+                </local:ScrollingTextBox.ContextMenu>
+            </local:ScrollingTextBox>
+        </Grid>
+    </Grid>
+</Page>
