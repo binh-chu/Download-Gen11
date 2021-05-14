@@ -9,6 +9,7 @@
         Width="800"
         Height="650"
         Closing="Window_Closing"
+        Loaded="Window_Loaded"
         Icon="/Gen11Downloader.v2;component/Resources/win.ico"
         mc:Ignorable="d">
     <Window.DataContext>
